@@ -1,0 +1,9 @@
+<div>
+
+    <!-- #s will hold all the data for this tag -->
+    <!-- keyup.enter is event -->
+    <!-- [value] sy box mein value aye gy -->
+    <input #s type="text" placeholder="Search Food Mine!" (keyup.enter)="search(s.value)" [value]="searchTerm" />
+
+    <button (click)="search(s.value)">Search</button>
+</div>
