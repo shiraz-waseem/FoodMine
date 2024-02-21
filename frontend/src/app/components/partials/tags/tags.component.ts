@@ -9,11 +9,13 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './tags.component.html',
-  styleUrl: './tags.component.css'
+  styleUrl: './tags.component.css',
 })
 export class TagsComponent {
   tags?: Tag[];
   constructor(foodService: FoodService) {
-    this.tags = foodService.getAllTags();
+    foodService.getAllTags().subscribe((serverTags) => {
+      this.tags = serverTags;
+    });
   }
 }
