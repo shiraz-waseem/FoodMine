@@ -1,0 +1,10 @@
+<!-- <div class="error-list" *ngIf="fc['email'].errors && isSubmitted">
+    <div *ngIf="fc['email'].errors['required']">Should not be empty</div>
+    <div *ngIf="fc['email'].errors['email']">Email is not correct</div>
+</div> -->
+
+<div class="error-list" *ngIf="errorMessages && showErrorsWhen">
+    <div *ngFor="let errorMessage of errorMessages">
+        {{errorMessage}}
+    </div>
+</div>
