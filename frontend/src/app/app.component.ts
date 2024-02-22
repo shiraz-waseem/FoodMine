@@ -6,6 +6,7 @@ import { HomeComponent } from './components/pages/home/home.component';
 import { RatingModule } from 'ng-starrating';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',

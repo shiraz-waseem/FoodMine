@@ -7,6 +7,8 @@ import {
 } from '@angular/forms';
 import { TitleComponent } from '../../partials/title/title.component';
 import { CommonModule } from '@angular/common';
+import { UserService } from '../../../services/user.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -19,9 +21,15 @@ export class LoginPageComponent implements OnInit {
   loginForm!: FormGroup;
   isSubmitted = false; // User presented submitted button or not we want to show validations when user submit button
 
-  // we can create a new login form by creating a new instance of FormGroup but too much code so we can use FormBuilder
+  returnUrl = '';
 
-  constructor(private formBuilder: FormBuilder) {}
+  // we can create a new login form by creating a new instance of FormGroup but too much code so we can use FormBuilder
+  constructor(
+    private formBuilder: FormBuilder,
+    private userService: UserService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
@@ -32,6 +40,8 @@ export class LoginPageComponent implements OnInit {
 
       // remember inside typescript we dont call it email form input we call it email form control
     });
+
+    this.returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'];
   }
 
   // if you want to have access to email you have to write loginForm.controls.email
@@ -46,5 +56,17 @@ export class LoginPageComponent implements OnInit {
     if (this.loginForm.invalid) return;
     alert(`email: ${this.fc['email'].value},
      password: ${this.fc['password'].value}`);
+
+    this.userService
+      .login({
+        email: this.fc['email'].value,
+        password: this.fc['password'].value,
+      })
+      .subscribe(() => {
+        this.router.navigateByUrl(this.returnUrl);
+      });
+
+    // After finishing the login process we want to return the user where he was it create returnURL = ''.
+    // We need to return the user too need to injected router too.
   }
 }
