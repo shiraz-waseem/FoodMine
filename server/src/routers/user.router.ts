@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 import { Router } from "express";
 import { sample_users } from "../data";
 import { User, UserModel } from "../models/user.model";
-
+import { HTTP_BAD_REQUEST } from "../constants/http_status";
+const bcrypt = require("bcryptjs");
 const router = Router();
 
 // for users
@@ -21,25 +22,43 @@ router.get("/seed", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  // phely wal is of sample_user and 2nd is we getting from req.body
   const user = await UserModel.findOne({ email, password });
-
-  // const body = req.body;
-  // const user1 = sample_users.find(
-  //   (user) => user.email === body.email && user.password === body.password
-  // );
 
   if (user) {
     res.send(generateTokenReponse(user));
   } else {
-    const BAD_REQUEST = 400;
-    res.status(BAD_REQUEST).send("Username or password is invalid!");
+    // const BAD_REQUEST = 400;
+    res.status(HTTP_BAD_REQUEST).send("Username or password is invalid!");
   }
 });
 
-// get user with type of any
+// Register API
+router.post("/register", async (req, res) => {
+  const { name, email, password, address } = req.body;
+
+  const user = await UserModel.findOne({ email });
+
+  if (user) {
+    res.status(HTTP_BAD_REQUEST).send("User is already exist, please login!");
+    return;
+  }
+
+  const encryptedPassword = await bcrypt.hash(password, 10);
+
+  const newUser: User = {
+    id: "",
+    name,
+    email: email.toLowerCase(),
+    password: encryptedPassword,
+    address,
+    isAdmin: false,
+  };
+
+  const dbUser = await UserModel.create(newUser);
+  res.send(generateTokenReponse(dbUser));
+});
+
 const generateTokenReponse = (user: User) => {
-  // process of generating token -> sign . Right now we want to encode email and isAdmin properties. 2nd paramater is private key env mein baad mein rkh dena. Everyone has this secret can decode
   const token = jwt.sign(
     {
       email: user.email,
@@ -51,8 +70,6 @@ const generateTokenReponse = (user: User) => {
     }
   );
 
-  // user.token = token;
-  // return user;
   return {
     id: user.id,
     email: user.email,

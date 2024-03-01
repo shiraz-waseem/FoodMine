@@ -10,3 +10,4 @@ export const FOOD_BY_ID_URL = FOODS_URL + '/';
 // param wali mein just passed /
 
 export const USER_LOGIN_URL = BASE_URL + '/api/users/login';
+export const USER_REGISTER_URL = BASE_URL + '/api/users/register';
