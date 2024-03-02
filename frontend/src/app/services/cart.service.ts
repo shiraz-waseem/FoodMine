@@ -55,6 +55,10 @@ export class CartService {
     return this.cartSubject.asObservable();
   }
 
+  getCart(): Cart {
+    return this.cartSubject.value;
+  }
+
   private setCartToLocalStorage(): void {
     // setting values of cart. First part of reduce is accum which has prevSum and currentItem
     // jitni items in cart utni baar reduce will be call phely prevSum will be 0 and second time run huga value change hujaye gy and it will be prevSum

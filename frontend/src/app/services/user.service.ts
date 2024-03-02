@@ -43,6 +43,10 @@ export class UserService {
     );
   }
 
+  public get currentUser(): User {
+    return this.userSubject.value;
+  }
+
   logout() {
     this.userSubject.next(new User());
     localStorage.removeItem(USER_KEY);
