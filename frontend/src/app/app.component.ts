@@ -7,6 +7,7 @@ import { RatingModule } from 'ng-starrating';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
+import { LoadingComponent } from './components/partials/loading/loading.component';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ import { ToastrModule } from 'ngx-toastr';
     HeaderComponent,
     HomeComponent,
     ReactiveFormsModule,
+    LoadingComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
