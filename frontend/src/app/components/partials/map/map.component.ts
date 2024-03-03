@@ -1,4 +1,10 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  ViewChild,
+} from '@angular/core';
 import {
   LatLng,
   LatLngExpression,
@@ -14,18 +20,20 @@ import {
 } from 'leaflet';
 import { LocationService } from '../../../services/location.service';
 import { Order } from '../../../shared/models/Order';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'map',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './map.component.html',
   styleUrl: './map.component.css',
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnChanges {
   @Input()
   order!: Order;
-
+  @Input()
+  readonly = false;
   private readonly MARKER_ZOOM_LEVEL = 16; // When you show the marker on screen we need to setView
   // default bhi huta but its not good use this one
   private readonly MARKER_ICON = icon({
@@ -45,8 +53,33 @@ export class MapComponent implements OnInit {
 
   constructor(private locationService: LocationService) {}
 
-  ngOnInit(): void {
+  // We cant using ngOnInIt it will trigger from getting to server and server sy changes arhy so ngOnChanges when we get order from server this will be called
+  ngOnChanges(): void {
+    if (!this.order) return; // agar order undefine then return warna next step initialize
+
     this.initializeMap();
+
+    // this.addressLatLng means it has value
+    if (this.readonly && this.addressLatLng) {
+      this.showLocationOnReadonlyMode();
+    }
+  }
+
+  // showing marker and disabling everything
+  showLocationOnReadonlyMode() {
+    const m = this.map;
+    this.setMarker(this.addressLatLng);
+    m.setView(this.addressLatLng, this.MARKER_ZOOM_LEVEL);
+
+    m.dragging.disable();
+    m.touchZoom.disable();
+    m.doubleClickZoom.disable();
+    m.scrollWheelZoom.disable();
+    m.boxZoom.disable();
+    m.keyboard.disable();
+    m.off('click');
+    m.tap?.disable();
+    this.currentMarker.dragging?.disable();
   }
 
   initializeMap() {
@@ -101,9 +134,17 @@ export class MapComponent implements OnInit {
   }
 
   set addressLatLng(latlng: LatLng) {
+    // server sy string mein arha so when its fixed just return db mein fixed ha
+    if (!latlng.lat.toFixed) return;
+
     latlng.lat = parseFloat(latlng.lat.toFixed(8)); // we did it for mongodb as we made it fixed with 8 floating points
     latlng.lng = parseFloat(latlng.lng.toFixed(8));
     this.order.addressLatLng = latlng;
     console.log(this.order.addressLatLng);
+  }
+
+  // if readonly true then show addressLatLng. Now you want to access it then you can using this. krke
+  get addressLatLng() {
+    return this.order.addressLatLng!;
   }
 }
