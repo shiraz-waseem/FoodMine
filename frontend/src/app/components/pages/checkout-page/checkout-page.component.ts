@@ -12,6 +12,7 @@ import { UserService } from '../../../services/user.service';
 import { TitleComponent } from '../../partials/title/title.component';
 import { TextInputComponent } from '../../partials/text-input/text-input.component';
 import { OrderItemsListComponent } from '../../partials/order-items-list/order-items-list.component';
+import { MapComponent } from '../../partials/map/map.component';
 
 @Component({
   selector: 'app-checkout-page',
@@ -23,6 +24,7 @@ import { OrderItemsListComponent } from '../../partials/order-items-list/order-i
     ReactiveFormsModule,
     TextInputComponent,
     OrderItemsListComponent,
+    MapComponent,
   ],
 })
 export class CheckoutPageComponent implements OnInit {
